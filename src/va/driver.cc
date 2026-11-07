@@ -180,12 +180,11 @@ extern "C" VAStatus __attribute__((visibility("default"))) VA_DRIVER_INIT_FUNC(V
         return VA_STATUS_ERROR_OPERATION_FAILED;
     }
     d->render_fd = render_fd_of(ctx);
-    if (d->options.copy_mode == iris::CopyMode::Gpu)
-        d->copier = iris::make_gpu_copy(d->render_fd);
-    if (!d->copier)
-        d->copier = iris::make_cpu_copy();
-    d->trace("va init node=%s render_fd=%d copy=%s profiles=%zu", d->capabilities.node.c_str(), d->render_fd,
-        d->copier->name(), d->capabilities.profiles.size());
+    // Capability enumeration runs before browser sandbox initialization.
+    // Creating an EGL copy engine here starts Mesa worker threads and can
+    // prevent Chromium from installing its GPU seccomp policy.
+    d->trace("va init node=%s render_fd=%d copy=deferred profiles=%zu", d->capabilities.node.c_str(),
+        d->render_fd, d->capabilities.profiles.size());
 
     ctx->version_major = VA_MAJOR_VERSION;
     ctx->version_minor = VA_MINOR_VERSION;
