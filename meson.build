@@ -22,11 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 project('libva-v4l2', ['cpp', 'c'],
-	# Derived from git when one is available. The fallback matters: the driver
-	# is routinely built from a source tree synced to a target device without
-	# its .git directory, and a hard failure here blocks the build entirely.
-	version: run_command(['sh', '-c', 'git rev-parse --short HEAD 2>/dev/null || echo unknown'],
-		check: true).stdout().strip(),
+	version: 'f587b14',
 	meson_version: '>= 0.56.0')
 
 cc = meson.get_compiler('cpp')
