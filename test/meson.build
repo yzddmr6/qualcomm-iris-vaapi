@@ -55,3 +55,15 @@ test('provenance-self-test', find_program('provenance-self-test.sh'),
      args: [meson.project_source_root()])
 test('iris-browser-launcher-check', find_program('iris-browser-launcher-check.sh'),
      args: [meson.project_source_root()])
+
+# Real executable-name controls exercise the VA query and create-config API.
+foreach client : ['chrome', 'firefox']
+  profile_test = executable(client,
+    ['client-profile-policy.cc', '../src/va/config.cc'],
+    dependencies: [iris_core_dep],
+    cpp_args: ['-Wall', '-Wextra', '-std=c++20'])
+  expected = client == 'chrome' ? 'blocked' : 'allowed'
+  test('profile-policy-' + client, profile_test, args: [expected])
+  test('profile-policy-' + client + '-renamed-title', profile_test,
+       args: [expected, 'rename-title'])
+endforeach

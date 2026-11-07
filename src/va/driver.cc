@@ -4,6 +4,7 @@
 // src/va file shares.
 
 #include "driver.h"
+#include "client_policy.h"
 
 #include "../util/error.h"
 
@@ -128,6 +129,7 @@ Capabilities probe_capabilities(const iris::Options& options)
     }
     if (options.experimental_profiles && caps.output_formats.count(V4L2_PIX_FMT_AV1) && caps.nv12)
         caps.profiles.insert(VAProfileAV1Profile0);
+    apply_client_profile_policy(caps.profiles);
     return caps;
 }
 
